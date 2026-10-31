@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🛑 impulse-brake
+<img src="assets/logo.png" width="120" alt="impulse-brake">
+
+# impulse-brake
 
 **当你在编码会话里说出「全部重写」，AI 先给你一个方案，而不是直接开工。**
 
@@ -12,6 +14,7 @@
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
 [![Codex plugin](https://img.shields.io/badge/Codex-plugin-10a37f?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
 [![pi package](https://img.shields.io/badge/pi-package-8a7fe8?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
+[![DSH](https://img.shields.io/badge/DSH-skill%20%2B%20inject-2f81f7?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
 
 </div>
 
@@ -42,7 +45,7 @@
 
 ## 安装
 
-### Claude Code
+### <img src="assets/clients/claude-code.svg" width="18" align="top" alt=""> Claude Code
 
 ```bash
 claude plugin marketplace add zxbdzh/impulse-brake
@@ -53,7 +56,7 @@ claude plugin install impulse-brake@impulse-brake
 
 一次装好 skill + 两个 hook，不用再配别的。
 
-### Codex
+### <img src="assets/clients/codex.svg" width="18" align="top" alt=""> Codex
 
 Codex 的 hook 命令不支持任何变量展开（`${PLUGIN_ROOT}` 会原样丢给 node），插件里那份 hooks.json 在 Codex 里跑不起来，所以要多一步把绝对路径写进 `~/.codex/hooks.json`：
 
@@ -71,7 +74,7 @@ codex plugin marketplace add zxbdzh/impulse-brake
 codex plugin add impulse-brake@impulse-brake
 ```
 
-### Pi
+### <img src="assets/clients/pi.svg" width="18" align="top" alt=""> Pi
 
 ```bash
 pi install git:github.com/zxbdzh/impulse-brake
@@ -79,7 +82,18 @@ pi install git:github.com/zxbdzh/impulse-brake
 
 Pi 这边是 package，带的是 skill；hook 层目前没做 Pi 扩展。
 
-### magpie 网关（可选，另一种覆盖方式）
+### <img src="assets/clients/dsh.svg" width="18" align="top" alt=""> DSH
+
+DSH 没有 hook 机制，入口是 `~/.dsh/skills`（技能）和 `~/.dsh/prompt-inject.md`（每轮注入）。一条命令装两样：
+
+```bash
+git clone https://github.com/zxbdzh/impulse-brake ~/.impulse-brake
+node ~/.impulse-brake/hooks/install-dsh.mjs
+```
+
+脚本把 skill 拷进 `~/.dsh/skills/impulse-brake`，并在注入提示词里维护一段带标记的提醒块（幂等，改前备份）。DSH 的拦截精度不如 hook 层，但它在每轮都生效，不靠模型自觉。
+
+### <img src="assets/clients/magpie.svg" width="18" align="top" alt=""> magpie 网关（可选，另一种覆盖方式）
 
 不想装插件、但请求都走 [magpie](https://usemagpie.ai) 网关时，用中间件版一次覆盖所有客户端：
 
@@ -89,6 +103,16 @@ magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
 ```
 
 网关热加载，不用重启。和插件版二选一，两个都装会提醒两次。
+
+## 支持情况
+
+| 客户端 | 技能 | 关键词提醒 | 拦截高危命令 | 装法 |
+|---|:---:|:---:|:---:|---|
+| <img src="assets/clients/claude-code.svg" width="16" align="top" alt=""> Claude Code | ✅ | ✅ hook | ✅ hook | `claude plugin install` |
+| <img src="assets/clients/codex.svg" width="16" align="top" alt=""> Codex | ✅ | ✅ hook | ✅ hook | `install-codex.mjs` |
+| <img src="assets/clients/pi.svg" width="16" align="top" alt=""> Pi | ✅ | — | — | `pi install` |
+| <img src="assets/clients/dsh.svg" width="16" align="top" alt=""> DSH | ✅ | ✅ 提示词注入 | — | `install-dsh.mjs` |
+| <img src="assets/clients/magpie.svg" width="16" align="top" alt=""> magpie 网关 | — | ✅ 中间件 | 只拦你输入里的命令 | `magpie plugin add` |
 
 ## 装了它，你会得到什么
 
@@ -128,10 +152,12 @@ impulse-brake/
 ├── hooks/
 │   ├── hooks.json         UserPromptSubmit + PreToolUse 注册
 │   ├── install-codex.mjs  Codex 专用：把绝对路径写进 ~/.codex/hooks.json
+│   ├── install-dsh.mjs    DSH 专用：拷 skill + 写 prompt-inject.md 提醒块
 │   ├── lib.mjs            词表 / 危险命令 / 提醒正文（改这里）
 │   ├── user-prompt-submit.mjs
 │   ├── pre-tool-use.mjs
 │   └── test.mjs
+├── assets/                图标：logo、社交预览、各客户端标记
 ├── skills/impulse-brake/  刹车协议
 └── middleware/            magpie 网关中间件版（可选）
 ```

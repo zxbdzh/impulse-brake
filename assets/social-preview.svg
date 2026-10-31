@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="impulse-brake">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B0E13"/>
+      <stop offset=".6" stop-color="#0A0C10"/>
+      <stop offset="1" stop-color="#12161D"/>
+    </linearGradient>
+    <radialGradient id="halo" cx=".26" cy=".42" r=".55">
+      <stop offset="0" stop-color="#E0A34A" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#E0A34A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F4F6F9"/>
+      <stop offset=".45" stop-color="#C7CFDA"/>
+      <stop offset="1" stop-color="#8A94A6"/>
+    </linearGradient>
+    <linearGradient id="copper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2C879"/>
+      <stop offset="1" stop-color="#D08A2E"/>
+    </linearGradient>
+    <linearGradient id="ring" x1=".15" y1="0" x2=".85" y2="1">
+      <stop offset="0" stop-color="#CBD3DE" stop-opacity=".95"/>
+      <stop offset=".55" stop-color="#7E8899" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#3E4655" stop-opacity=".85"/>
+    </linearGradient>
+    <radialGradient id="plate" cx=".46" cy=".22" r=".9">
+      <stop offset="0" stop-color="#1A202A"/>
+      <stop offset=".55" stop-color="#0D1116"/>
+      <stop offset="1" stop-color="#07090C"/>
+    </radialGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E0A34A" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#E0A34A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="640" fill="url(#halo)"/>
+
+  <!-- 细网格：只留右侧，像工程图纸 -->
+  <g stroke="#151A21" stroke-width="1" opacity=".8">
+    <path d="M720 0V640M880 0V640M1040 0V640M1200 0V640"/>
+    <path d="M640 120H1280M640 280H1280M640 440H1280"/>
+  </g>
+
+  <!-- 左侧标识：与 logo.svg 同一套几何 -->
+  <g transform="translate(64 128) scale(.56)">
+    <rect x="10" y="10" width="492" height="492" rx="118" fill="url(#plate)"/>
+    <rect x="11.5" y="11.5" width="489" height="489" rx="116.5" fill="none" stroke="#1F2530" stroke-width="3"/>
+    <polygon points="428.6,327.4 327.4,428.6 184.6,428.6 83.4,327.4 83.4,184.6 184.6,83.4 327.4,83.4 428.6,184.6"
+             fill="none" stroke="url(#ring)" stroke-width="15" stroke-linejoin="round" opacity=".92"/>
+    <path d="M118 256 H232" stroke="#D7DEE9" stroke-width="22" stroke-linecap="round" opacity=".88"/>
+    <rect x="241" y="144" width="30" height="224" rx="15" fill="url(#copper)"/>
+    <path d="M286 256 H316" stroke="#C6CFDC" stroke-width="14" stroke-linecap="round" opacity=".3"/>
+    <path d="M328 256 H342" stroke="#C6CFDC" stroke-width="10" stroke-linecap="round" opacity=".14"/>
+  </g>
+
+  <!-- 文字区 -->
+  <g font-family="Inter, 'Segoe UI', system-ui, -apple-system, sans-serif">
+    <text x="640" y="300" fill="#F5F7FA" font-size="96" font-weight="600" letter-spacing="-3">impulse-brake</text>
+    <text x="642" y="366" fill="#9AA4B2" font-size="34" font-weight="400">先说清方案，再动手改代码。</text>
+    <rect x="642" y="404" width="360" height="2" fill="url(#rule)"/>
+    <text x="642" y="470" fill="#6E7887" font-size="26" font-family="ui-monospace, 'SF Mono', Menlo, monospace">Claude Code · Codex · Pi · DSH · magpie</text>
+  </g>
+</svg>

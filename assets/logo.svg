@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="impulse-brake">
+  <defs>
+    <linearGradient id="steel" x1=".12" y1="0" x2=".82" y2="1">
+      <stop offset="0" stop-color="#EDF1F7"/>
+      <stop offset=".45" stop-color="#B3BDCB"/>
+      <stop offset="1" stop-color="#5B6575"/>
+    </linearGradient>
+    <linearGradient id="copper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7D493"/>
+      <stop offset=".48" stop-color="#E2A54E"/>
+      <stop offset="1" stop-color="#AE6C1E"/>
+    </linearGradient>
+    <radialGradient id="plate" cx=".46" cy=".22" r=".9">
+      <stop offset="0" stop-color="#1A202A"/>
+      <stop offset=".55" stop-color="#0D1116"/>
+      <stop offset="1" stop-color="#07090C"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 底盘 -->
+  <rect x="10" y="10" width="492" height="492" rx="118" fill="url(#plate)"/>
+  <rect x="11.5" y="11.5" width="489" height="489" rx="116.5" fill="none" stroke="#1F2530" stroke-width="3"/>
+
+  <!-- 八角轮廓：STOP 的通用语汇 -->
+  <polygon points="428.6,327.4 327.4,428.6 184.6,428.6 83.4,327.4 83.4,184.6 184.6,83.4 327.4,83.4 428.6,184.6"
+           fill="none" stroke="url(#steel)" stroke-width="15" stroke-linejoin="round" opacity=".92"/>
+
+  <!-- 冲动：从左推进的横条 -->
+  <path d="M118 256 H232" stroke="#D7DEE9" stroke-width="22" stroke-linecap="round" opacity=".88"/>
+
+  <!-- 刹车杆 -->
+  <rect x="241" y="144" width="30" height="224" rx="15" fill="url(#copper)"/>
+  <rect x="241" y="144" width="30" height="224" rx="15" fill="none" stroke="#FFE0AC" stroke-width="1" opacity=".35"/>
+
+  <!-- 被截断后的惯性残点 -->
+  <path d="M286 256 H316" stroke="#C6CFDC" stroke-width="14" stroke-linecap="round" opacity=".3"/>
+  <path d="M328 256 H342" stroke="#C6CFDC" stroke-width="10" stroke-linecap="round" opacity=".14"/>
+</svg>
