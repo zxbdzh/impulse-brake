@@ -42,8 +42,6 @@
 
 ## 安装
 
-三种装法，选你的客户端。装完都带 skill + hook 两层，不用另外配。
-
 ### Claude Code
 
 ```bash
@@ -51,16 +49,27 @@ claude plugin marketplace add zxbdzh/impulse-brake
 claude plugin install impulse-brake@impulse-brake
 ```
 
-或在会话里：`/plugin marketplace add zxbdzh/impulse-brake` → `/plugin install impulse-brake@impulse-brake`
+会话里也行：`/plugin marketplace add zxbdzh/impulse-brake` → `/plugin install impulse-brake@impulse-brake`
+
+一次装好 skill + 两个 hook，不用再配别的。
 
 ### Codex
+
+Codex 的 hook 命令不支持任何变量展开（`${PLUGIN_ROOT}` 会原样丢给 node），插件里那份 hooks.json 在 Codex 里跑不起来，所以要多一步把绝对路径写进 `~/.codex/hooks.json`：
+
+```bash
+git clone https://github.com/zxbdzh/impulse-brake ~/.impulse-brake
+node ~/.impulse-brake/hooks/install-codex.mjs
+```
+
+装完重启 Codex，它会问是否信任新 hook，同意后生效。脚本幂等、改前自动备份，不会动你已有的 hook。
+
+想要 skill 也进 Codex 的插件列表，再补：
 
 ```bash
 codex plugin marketplace add zxbdzh/impulse-brake
 codex plugin add impulse-brake@impulse-brake
 ```
-
-Codex 首次运行会问是否信任插件的 hook，同意后生效。
 
 ### Pi
 
@@ -68,7 +77,9 @@ Codex 首次运行会问是否信任插件的 hook，同意后生效。
 pi install git:github.com/zxbdzh/impulse-brake
 ```
 
-### magic/magpie 网关（可选，另一种覆盖方式）
+Pi 这边是 package，带的是 skill；hook 层目前没做 Pi 扩展。
+
+### magpie 网关（可选，另一种覆盖方式）
 
 不想装插件、但请求都走 [magpie](https://usemagpie.ai) 网关时，用中间件版一次覆盖所有客户端：
 
@@ -77,7 +88,7 @@ cp middleware/impulse-brake.middleware.js ~/.config/magpie/middleware/
 magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
 ```
 
-网关热加载，不用重启。和插件版二选一即可，两个都装会提醒两次。
+网关热加载，不用重启。和插件版二选一，两个都装会提醒两次。
 
 ## 装了它，你会得到什么
 
@@ -116,6 +127,7 @@ impulse-brake/
 ├── .codex-plugin/         Codex 插件清单（与上面共用同一份 marketplace.json）
 ├── hooks/
 │   ├── hooks.json         UserPromptSubmit + PreToolUse 注册
+│   ├── install-codex.mjs  Codex 专用：把绝对路径写进 ~/.codex/hooks.json
 │   ├── lib.mjs            词表 / 危险命令 / 提醒正文（改这里）
 │   ├── user-prompt-submit.mjs
 │   ├── pre-tool-use.mjs
@@ -134,16 +146,26 @@ PreToolUse 里**没有**「说句话就放行」的后门：那是最后一道�
 
 ## 实测
 
-| 场景 | Claude Code | hook 层 |
+都在这台 Windows 机器上真跑过，不是推演：
+
+| 客户端 | 场景 | 结果 |
 |---|---|---|
-| 「这个项目全部重写吧」 | 回①/②/③ 方案，不直接开工 | UserPromptSubmit 注入提醒 |
-| 「帮我重写这个函数」 | 正常干活 | 不触发 |
-| 「git reset --hard」 | 被拒 | PreToolUse deny |
-| 「rm -rf ./dist」 | 正常执行 | 只拦根目录/家目录 |
+| Claude Code 2.1 | 「这个项目全部重写吧」 | 回①/②/③ 方案，不直接开工 |
+| Claude Code 2.1 | 让它执行 `git reset --hard` | hook 拦下，模型报告被拦 |
+| Codex 0.165 | 「这个项目全部重写吧」 | 先问范围和技术栈，不直接推倒 |
+| Codex 0.165 | 让它执行 `git reset --hard` | `hook: PreToolUse Blocked` |
+| 两家 | `rm -rf ./dist` | 放行（只拦根目录 / 家目录） |
 
 ```bash
-npm test    # hooks 13 项 + middleware 11 项
+npm test    # hooks 15 项 + middleware 11 项
 ```
+
+顺手记下踩过的坑，免得后来人重踩：
+
+- Claude Code 只认 `${CLAUDE_PLUGIN_ROOT}`；写 `${PLUGIN_ROOT}` 会静默失败，hook 像是装了但从不触发
+- Codex 执行 hook 命令**不做任何变量展开**，只能用绝对路径
+- Codex 的 `PreToolUse` 退出码必须是 **0**，靠 JSON 里的 `permissionDecision: "deny"` 拦截；退出码 2 会被当成 hook 故障而放行
+- Claude Code 反过来：实测 **exit 2** 才拦得住，纯 JSON + exit 0 会放行。所以 hook 用 Codex 独有的 `turn_id` 字段判断客户端，各用各的退出码
 
 ## 已知边界
 
