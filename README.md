@@ -202,6 +202,21 @@ npm test    # hooks 15 项 + middleware 11 项
 - 关键词是启发式的，两头都会漏和误：你说「干吧，别问了」会漏；你说「重构整个数据层」会误
 - 它让 AI 多问一句，不是替你做决定
 
+## 想关掉的时候
+
+按层关，不用整个卸载：
+
+| 想关的部分 | 怎么关 |
+|---|---|
+| 只避开这次提醒 | 换句话讲，别带触发词；hook 只在命中关键词时注入 |
+| Claude Code 整套 | 会话内 `/plugin disable impulse-brake@impulse-brake`，或 `claude plugin uninstall impulse-brake@impulse-brake` |
+| Codex 的 hook | 删掉 `~/.codex/hooks.json` 里指向 `hooks/` 的两条命令，重启 Codex（安装器每次改前都留备份） |
+| Pi 的 skill | `pi remove git:github.com/zxbdzh/impulse-brake` |
+| DSH 的提醒 | 删掉 `~/.dsh/prompt-inject.md` 里 `<!-- impulse-brake:begin -->` 到 `<!-- impulse-brake:end -->` 这一段 |
+| magpie 网关 | `magpie plugin off` |
+
+**单条命令要放行，由你在终端自己跑。** PreToolUse 故意不留「说一句话就放行」的口子——最后一道闸，决定权在人手上。命令你自己跑一遍确认无害，再交给模型。
+
 ## 贡献
 
 - 新的触发词 / 更准的拦截规则，改 `hooks/lib.mjs` 的数组，顺手补 `hooks/test.mjs`
