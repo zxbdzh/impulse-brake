@@ -1,0 +1,16 @@
+{
+  "name": "impulse-brake",
+  "displayName": "Impulse Brake",
+  "version": "0.1.0",
+  "description": "冲动刹车：命中重写/推翻/换栈这类冲动信号时先给结构化方案，高危不可逆命令直接拦下。",
+  "shortDescription": "在你推翻重来之前，先给一个方案。",
+  "author": {
+    "name": "zxbdzh"
+  },
+  "homepage": "https://github.com/zxbdzh/impulse-brake",
+  "repository": "https://github.com/zxbdzh/impulse-brake",
+  "license": "MIT",
+  "category": "Productivity",
+  "keywords": ["guardrails", "prompt", "safety", "skill", "hooks"],
+  "hooks": "./hooks/hooks.json"
+}

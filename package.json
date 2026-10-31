@@ -1,0 +1,22 @@
+{
+  "name": "impulse-brake",
+  "version": "0.1.0",
+  "description": "冲动刹车：命中重写/推翻/换栈这类冲动信号时先给结构化方案，高危不可逆命令直接拦下。Claude Code / Codex 插件，也是 pi package。",
+  "keywords": [
+    "pi-package",
+    "claude-code-plugin",
+    "codex-plugin",
+    "guardrails",
+    "safety"
+  ],
+  "license": "MIT",
+  "author": "zxbdzh",
+  "homepage": "https://github.com/zxbdzh/impulse-brake",
+  "repository": "https://github.com/zxbdzh/impulse-brake",
+  "scripts": {
+    "test": "node hooks/test.mjs && node middleware/test.mjs"
+  },
+  "pi": {
+    "skills": ["./skills"]
+  }
+}

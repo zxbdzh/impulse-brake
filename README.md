@@ -9,9 +9,9 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-3da639?style=flat-square)](LICENSE)
 [![test](https://github.com/zxbdzh/impulse-brake/actions/workflows/test.yml/badge.svg)](https://github.com/zxbdzh/impulse-brake/actions/workflows/test.yml)
 [![GitHub stars](https://img.shields.io/github/stars/zxbdzh/impulse-brake?style=flat-square&color=f5c518)](https://github.com/zxbdzh/impulse-brake/stargazers)
-[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?style=flat-square)]()
-[![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20Codex%20%7C%20Pi-blueviolet?style=flat-square)]()
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/zxbdzh/impulse-brake/issues)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
+[![Codex plugin](https://img.shields.io/badge/Codex-plugin-10a37f?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
+[![pi package](https://img.shields.io/badge/pi-package-8a7fe8?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
 
 </div>
 
@@ -40,26 +40,62 @@
 
 刹车不是为了拦住你，是为了让你在踩油门前多看一眼。**所以每个冲动只刹一次**——你听完还坚持，AI 立刻照办，不重复劝阻。
 
-> 真实对话输出，来自 Codex CLI 实测。
+## 安装
 
-## 目录
+三种装法，选你的客户端。装完都带 skill + hook 两层，不用另外配。
 
-- [两层机制](#两层机制)
-- [刹车协议](#刹车协议)
-- [安装](#安装)
-- [配置](#配置)
-- [实测](#实测)
-- [已知边界](#已知边界)
-- [贡献](#贡献)
+### Claude Code
 
-## 两层机制
+```bash
+claude plugin marketplace add zxbdzh/impulse-brake
+claude plugin install impulse-brake@impulse-brake
+```
 
-| 层 | 干什么 | 靠什么触发 |
+或在会话里：`/plugin marketplace add zxbdzh/impulse-brake` → `/plugin install impulse-brake@impulse-brake`
+
+### Codex
+
+```bash
+codex plugin marketplace add zxbdzh/impulse-brake
+codex plugin add impulse-brake@impulse-brake
+```
+
+Codex 首次运行会问是否信任插件的 hook，同意后生效。
+
+### Pi
+
+```bash
+pi install git:github.com/zxbdzh/impulse-brake
+```
+
+### magic/magpie 网关（可选，另一种覆盖方式）
+
+不想装插件、但请求都走 [magpie](https://usemagpie.ai) 网关时，用中间件版一次覆盖所有客户端：
+
+```bash
+cp middleware/impulse-brake.middleware.js ~/.config/magpie/middleware/
+magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
+```
+
+网关热加载，不用重启。和插件版二选一即可，两个都装会提醒两次。
+
+## 装了它，你会得到什么
+
+Claude Code 里 `claude plugin details impulse-brake` 的实际输出：
+
+```text
+Skills (1)  impulse-brake
+Hooks (2)   UserPromptSubmit, PreToolUse  (harness-only — no model context cost)
+Always-on:  ~146 tok  added to every session
+```
+
+| 层 | 干什么 | 触发方式 |
 |---|---|---|
 | 🧠 **skill** | 定义刹车协议：遇到冲动该给什么方案 | AI 自己判断 + 关键词 |
-| ⚡ **gateway middleware** | 命中关键词就注入提醒；命中高危命令直接拦 | 确定性，不依赖模型自觉 |
+| ⚡ **UserPromptSubmit hook** | 命中关键词就往本轮上下文追加提醒 | 确定性，不依赖模型自觉 |
+| 🚧 **PreToolUse hook** | 拦下不可逆命令，deny + 退出码 2 | 确定性 |
 
-skill 单独用也行。加上中间件后，不再依赖模型「想起来用」——你那句冲动的话可能只是「干吧」，没有「重写」两个字，模型不会主动刹；中间件会看着整句话。
+skill 单独用也行。加上 hook 后不再依赖模型「想起来用」——你那句冲动的话可能只是「干吧」，没有「重写」两个字。
 
 ## 刹车协议
 
@@ -72,69 +108,54 @@ skill 单独用也行。加上中间件后，不再依赖模型「想起来用�
 
 配套习惯：大项目拆成 1–3 天的短冲刺，每个冲刺收尾必须有能跑或能演示的东西。
 
-## 安装
+## 仓库结构
 
-### 只装 skill
-
-```bash
-git clone https://github.com/zxbdzh/impulse-brake
-
-cp -r impulse-brake/skill ~/.claude/skills/impulse-brake      # Claude Code
-cp -r impulse-brake/skill ~/.pi/agent/skills/impulse-brake     # Pi
+```text
+impulse-brake/
+├── .claude-plugin/        Claude Code 插件 + 市场清单
+├── .codex-plugin/         Codex 插件清单（与上面共用同一份 marketplace.json）
+├── hooks/
+│   ├── hooks.json         UserPromptSubmit + PreToolUse 注册
+│   ├── lib.mjs            词表 / 危险命令 / 提醒正文（改这里）
+│   ├── user-prompt-submit.mjs
+│   ├── pre-tool-use.mjs
+│   └── test.mjs
+├── skills/impulse-brake/  刹车协议
+└── middleware/            magpie 网关中间件版（可选）
 ```
-
-放进 agent 的 skills 目录即可。目录名和 `SKILL.md` 里的 `name` 保持一致。
-
-### 加装网关中间件
-
-仅限走 [magpie](https://usemagpie.ai) 网关的请求。好处是一次装好，所有走网关的客户端自动覆盖。
-
-```bash
-cp impulse-brake/middleware/impulse-brake.middleware.js ~/.config/magpie/middleware/
-magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
-```
-
-网关热加载，不用重启。
 
 ## 配置
 
-词表、拦截清单、注入文本都在 `middleware/impulse-brake.middleware.js` 顶部的 `DEFAULTS` 里，改完保存即生效。
-
-```js
-words: ["全部重写", "推倒重来", "重构整个", "换框架", "换库", "不做了", ...],
-blockPatterns: ["git\\s+reset\\s+--hard", "git\\s+push\\s+(--force|-f)", ...],
-blockAction: "reject",        // reject = 拦下来；warn = 只提醒
-confirmWords: ["确认执行"],     // 消息里写这个就放行
-```
-
-> ⚠️ 别用 `magpie plugin options` 从 Windows 命令行传中文 JSON —— 会被写成乱码。要改就在 magpie 应用的插件选项里改，或直接改这个文件。
+触发词、危险命令清单、注入的提醒正文都在 `hooks/lib.mjs` 顶部，改完保存即生效（插件装的是缓存副本，改仓库后需要 `claude plugin update` 或重装）。
 
 **刻意的取舍**：不收裸的「重写」。「帮我重写这个函数」是日常请求，不该触发——只收「全部重写」「推倒重来」「重构整个」这类改大件的说法。
 
+PreToolUse 里**没有**「说句话就放行」的后门：那是最后一道闸，要跑就由人手动跑。
+
 ## 实测
 
-| 场景 | 结果 |
-|---|---|
-| 「这个项目全部重写吧」 | 请求多注入约 190 token，模型先给分步迁移方案而不是直接动手 |
-| 「帮我重写这个函数」 | 不触发 |
-| 「git reset --hard」 | 400 拦下 |
-| 「确认执行 git reset --hard」 | 200 放行 |
+| 场景 | Claude Code | hook 层 |
+|---|---|---|
+| 「这个项目全部重写吧」 | 回①/②/③ 方案，不直接开工 | UserPromptSubmit 注入提醒 |
+| 「帮我重写这个函数」 | 正常干活 | 不触发 |
+| 「git reset --hard」 | 被拒 | PreToolUse deny |
+| 「rm -rf ./dist」 | 正常执行 | 只拦根目录/家目录 |
 
 ```bash
-node middleware/test.mjs   # 11 passed：四种协议 + 拦截逻辑
+npm test    # hooks 13 项 + middleware 11 项
 ```
 
 ## 已知边界
 
-- **网关只能拦你输入里的高危命令**。模型自己发出的工具调用在客户端执行，proxy 看不见。那层要另外写客户端的 hook：Pi 的 `tool_call` 事件、Claude Code 的 `PreToolUse`、Codex 的 `~/.codex/hooks.json`
-- 提醒会多花约 190 token，只在命中触发词时发生
+- **只写了 Claude Code 和 Codex 的 hook**。Cursor、Continue、Aider 之类要自己接，欢迎 PR
+- hook 版只能看**模型要执行的命令**，看不到你的原始意图逻辑；magpie 中间件版只能看**你输入的文本**。要两层都覆盖就两个都装
 - 关键词是启发式的，两头都会漏和误：你说「干吧，别问了」会漏；你说「重构整个数据层」会误
 - 它让 AI 多问一句，不是替你做决定
 
 ## 贡献
 
-- 新的触发词 / 更准的拦截规则，直接开 PR 改 `DEFAULTS`
-- 换了别的 agent 的 hook（Cursor、Continue、Aider……），欢迎补 `middleware/` 里的实现
+- 新的触发词 / 更准的拦截规则，改 `hooks/lib.mjs` 的数组，顺手补 `hooks/test.mjs`
+- 接别的客户端 hook，放 `hooks/` 下，注明 stdin/stdout 契约
 - 提 issue 时说清楚：你说了什么、哪个客户端、期望什么、实际什么
 
 ## 许可
