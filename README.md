@@ -104,6 +104,8 @@ magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
 
 网关热加载，不用重启。和插件版二选一，两个都装会提醒两次。
 
+> 客户端图标均为各家官方标识，版权归其所有者，此处仅用于标注支持范围。
+
 ## 支持情况
 
 | 客户端 | 技能 | 关键词提醒 | 拦截高危命令 | 装法 |
