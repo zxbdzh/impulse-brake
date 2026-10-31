@@ -2,9 +2,10 @@
 // PreToolUse hook（Claude Code / Codex 共用）
 // 拦下不可逆的高危命令：输出 deny JSON，永远 exit 0。
 //
-// 为什么是 exit 0：Codex 只认 exit 0 + JSON 里的 permissionDecision，
-// 退出码 2 会被当成 hook 故障而放行（实测 Codex 0.165）。Claude Code 两种都认，
-// 所以统一走 exit 0，一份代码两边都能拦。
+// 退出码两家不同（都实测过）：
+// · Codex 0.165：只认 exit 0 + JSON permissionDecision，退出码 2 会被当成 hook 故障放行；
+// · Claude Code 2.1：实测 exit 2 才拦得住，纯 JSON + exit 0 放行。
+// 靠 Codex 独有的 turn_id 字段区分客户端，各用各的退出码。
 //
 // 这里不给「说句话就放行」的后门：最后一道闸，要跑就由人手动跑。
 import { dangerHit, readInput } from "./lib.mjs";
@@ -36,4 +37,4 @@ process.stdout.write(
     },
   })
 );
-process.exit(0);
+process.exit(input.turn_id ? 0 : 2);
