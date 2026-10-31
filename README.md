@@ -93,7 +93,7 @@ node ~/.impulse-brake/hooks/install-dsh.mjs
 
 脚本把 skill 拷进 `~/.dsh/skills/impulse-brake`，并在注入提示词里维护一段带标记的提醒块（幂等，改前备份）。DSH 的拦截精度不如 hook 层，但它在每轮都生效，不靠模型自觉。
 
-### <img src="assets/clients/magpie.svg" width="18" align="top" alt=""> magpie 网关（可选，另一种覆盖方式）
+### <img src="assets/clients/magpie.png" width="18" align="top" alt=""> magpie 网关（可选，另一种覆盖方式）
 
 不想装插件、但请求都走 [magpie](https://usemagpie.ai) 网关时，用中间件版一次覆盖所有客户端：
 
@@ -114,7 +114,7 @@ magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
 | <img src="assets/clients/codex.svg" width="16" align="top" alt=""> Codex | ✅ | ✅ hook | ✅ hook | `install-codex.mjs` |
 | <img src="assets/clients/pi.svg" width="16" align="top" alt=""> Pi | ✅ | — | — | `pi install` |
 | <img src="assets/clients/dsh.svg" width="16" align="top" alt=""> DSH | ✅ | ✅ 提示词注入 | — | `install-dsh.mjs` |
-| <img src="assets/clients/magpie.svg" width="16" align="top" alt=""> magpie 网关 | — | ✅ 中间件 | 只拦你输入里的命令 | `magpie plugin add` |
+| <img src="assets/clients/magpie.png" width="16" align="top" alt=""> magpie 网关 | — | ✅ 中间件 | 只拦你输入里的命令 | `magpie plugin add` |
 
 ## 装了它，你会得到什么
 
