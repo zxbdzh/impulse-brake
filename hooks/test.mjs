@@ -44,13 +44,13 @@ function run(script, input) {
 // PreToolUse
 {
   const r = run("pre-tool-use.mjs", { tool_name: "Bash", tool_input: { command: "git reset --hard HEAD~3" } });
-  ok(r.code === 2, "ptu blocks git reset --hard");
+  ok(r.code === 0, "ptu exits 0 (Codex 只认 exit 0 + JSON deny)");
   ok(r.json?.hookSpecificOutput?.permissionDecision === "deny", "ptu emits deny");
-  ok(/git reset --hard/.test(r.stderr), "ptu names the command");
+  ok(/git reset --hard/.test(r.json?.hookSpecificOutput?.permissionDecisionReason || ""), "ptu names the command");
 }
 {
   const r = run("pre-tool-use.mjs", { tool_name: "Bash", tool_input: { command: "rm -rf /" } });
-  ok(r.code === 2, "ptu blocks rm -rf /");
+  ok(/deny/.test(r.stdout), "ptu denies rm -rf /");
 }
 {
   const r = run("pre-tool-use.mjs", { tool_name: "Bash", tool_input: { command: "rm -rf ./dist" } });
