@@ -44,9 +44,15 @@ function run(script, input) {
 // PreToolUse
 {
   const r = run("pre-tool-use.mjs", { tool_name: "Bash", tool_input: { command: "git reset --hard HEAD~3" } });
-  ok(r.code === 0, "ptu exits 0 (Codex 只认 exit 0 + JSON deny)");
+  ok(r.code === 2, "ptu exits 2 for Claude Code payload");
   ok(r.json?.hookSpecificOutput?.permissionDecision === "deny", "ptu emits deny");
   ok(/git reset --hard/.test(r.json?.hookSpecificOutput?.permissionDecisionReason || ""), "ptu names the command");
+}
+{
+  // Codex 的 payload 带 turn_id：必须 exit 0，否则 Codex 当成 hook 故障放行
+  const r = run("pre-tool-use.mjs", { turn_id: "t1", tool_name: "Bash", tool_input: { command: "git reset --hard HEAD~3" } });
+  ok(r.code === 0, "ptu exits 0 for Codex payload");
+  ok(/deny/.test(r.stdout), "ptu denies for Codex payload");
 }
 {
   const r = run("pre-tool-use.mjs", { tool_name: "Bash", tool_input: { command: "rm -rf /" } });
