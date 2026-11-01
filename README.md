@@ -24,6 +24,16 @@
 
 ---
 
+## 交给 AI 一键安装
+
+把下面这段发给你的 AI 编程助手，让它读取[安装指引](INSTALL.md)，为当前客户端完成安装、备份和验证：
+
+```text
+请读取 https://raw.githubusercontent.com/zxbdzh/impulse-brake/master/INSTALL.md ，按其中步骤为我当前使用的客户端安装 impulse-brake 并验证结果。只安装当前客户端，保留已有配置；需要重启或人工授权时明确告诉我。
+```
+
+支持 Claude Code / Codex / Pi / DSH；无法可靠判断当前客户端时，AI 会先询问。AI 需要联网读取文件并具备本地命令权限；客户端的信任确认不能跳过。magpie 网关只在你明确要求时安装，避免重复提醒。
+
 ## 30 秒看懂
 
 你说：

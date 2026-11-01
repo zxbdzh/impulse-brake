@@ -22,7 +22,17 @@ A lightweight skill and hooks for developers who start fast, change direction, a
 
 > **Language support:** This README is in English; the bundled skill, reminders, and default prompt triggers are currently in Chinese. An English prompt such as “rewrite everything” does **not** trigger the keyword hook by default. Command checks match command syntax, not your conversation language.
 
-[Demo](#a-30-second-example) · [Install](#install) · [Support](#support-matrix) · [Protocol](#the-brake-protocol) · [Limitations](#known-limitations) · [Disable](#disable-or-uninstall)
+[AI install](#let-your-ai-install-it) · [Demo](#a-30-second-example) · [Install](#install) · [Support](#support-matrix) · [Protocol](#the-brake-protocol) · [Limitations](#known-limitations) · [Disable](#disable-or-uninstall)
+
+## Let your AI install it
+
+Paste this into your coding assistant. It will read the [installation runbook](INSTALL.md), install for the current client, and verify the result:
+
+```text
+Read https://raw.githubusercontent.com/zxbdzh/impulse-brake/master/INSTALL.md and follow it to install impulse-brake for my current coding client. Preserve existing configuration, install only for this client, and verify the result. Tell me about any restart or human approval still required.
+```
+
+Covers Claude Code, Codex, Pi, and DSH. If the current client cannot be identified reliably, the assistant asks first. It needs network access and permission to run local commands; client trust prompts still require your approval. The magpie gateway route is explicit opt-in to avoid duplicate reminders.
 
 ## A 30-second example
 
