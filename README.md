@@ -4,6 +4,8 @@
 
 # impulse-brake
 
+**简体中文** | [English](README.en.md)
+
 **当你在编码会话里说出「全部重写」，AI 先给你一个方案，而不是直接开工。**
 
 一个给「想法多、动手快、也容易中途推翻重来」的人写的刹车。
@@ -17,6 +19,8 @@
 [![DSH](https://img.shields.io/badge/DSH-skill%20%2B%20inject-2f81f7?style=flat-square)](https://github.com/zxbdzh/impulse-brake)
 
 </div>
+
+> **语言范围**：英文使用说明见 [English README](README.en.md)。当前默认触发词、skill 和提醒正文仍以中文为主，英文的 `rewrite everything` 不会自动命中关键词 hook。
 
 ---
 
@@ -45,6 +49,8 @@
 
 ## 安装
 
+需要先安装对应客户端；hook 和 Codex / DSH 安装器需要 PATH 中可用的 Node.js，克隆仓库需要 Git。以下命令按 Bash / Git Bash 语法书写。
+
 ### <img src="assets/clients/claude-code.svg" width="18" align="top" alt=""> Claude Code
 
 ```bash
@@ -65,7 +71,7 @@ git clone https://github.com/zxbdzh/impulse-brake ~/.impulse-brake
 node ~/.impulse-brake/hooks/install-codex.mjs
 ```
 
-装完重启 Codex，它会问是否信任新 hook，同意后生效。脚本幂等、改前自动备份，不会动你已有的 hook。
+装完重启 Codex，并同意新 hook 的信任提示。安装器用绝对路径，勿移动或删除克隆目录；目录已存在则跳过克隆。正常 JSON 下会保留其他 hook，但无效 JSON 会在备份后被替换，安装前请先修复；已有配置会自动备份。
 
 想要 skill 也进 Codex 的插件列表，再补：
 
@@ -91,7 +97,7 @@ git clone https://github.com/zxbdzh/impulse-brake ~/.impulse-brake
 node ~/.impulse-brake/hooks/install-dsh.mjs
 ```
 
-脚本把 skill 拷进 `~/.dsh/skills/impulse-brake`，并在注入提示词里维护一段带标记的提醒块（幂等，改前备份）。DSH 的拦截精度不如 hook 层，但它在每轮都生效，不靠模型自觉。
+克隆目录已存在则跳过克隆。脚本把 skill 拷进 `~/.dsh/skills/impulse-brake`，在 `~/.dsh/prompt-inject.md` 维护带标记的提醒块。重跑会替换该 skill 副本和提醒块，修改前备份非空的注入文件。提醒每轮注入，但仍由模型决定是否遵循；本接入不提供工具命令拦截。
 
 ### <img src="assets/clients/magpie.png" width="18" align="top" alt=""> magpie 网关（可选，另一种覆盖方式）
 
@@ -102,7 +108,7 @@ cp middleware/impulse-brake.middleware.js ~/.config/magpie/middleware/
 magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
 ```
 
-网关热加载，不用重启。和插件版二选一，两个都装会提醒两次。
+网关热加载，不用重启。它与客户端关键词提醒可能重复；但中间件看不到本地工具执行，不能替代 PreToolUse 的命令拦截。若同时使用，需自行避免重复提醒。
 
 > 客户端图标均为各家官方标识，版权归其所有者，此处仅用于标注支持范围。
 
@@ -111,28 +117,22 @@ magpie plugin add ~/.config/magpie/middleware/impulse-brake.middleware.js
 | 客户端 | 技能 | 关键词提醒 | 拦截高危命令 | 装法 |
 |---|:---:|:---:|:---:|---|
 | <img src="assets/clients/claude-code.svg" width="16" align="top" alt=""> Claude Code | ✅ | ✅ hook | ✅ hook | `claude plugin install` |
-| <img src="assets/clients/codex.svg" width="16" align="top" alt=""> Codex | ✅ | ✅ hook | ✅ hook | `install-codex.mjs` |
+| <img src="assets/clients/codex.svg" width="16" align="top" alt=""> Codex | 插件另装 | ✅ hook | ✅ hook | `install-codex.mjs` |
 | <img src="assets/clients/pi.svg" width="16" align="top" alt=""> Pi | ✅ | — | — | `pi install` |
 | <img src="assets/clients/dsh.svg" width="16" align="top" alt=""> DSH | ✅ | ✅ 提示词注入 | — | `install-dsh.mjs` |
 | <img src="assets/clients/magpie.png" width="16" align="top" alt=""> magpie 网关 | — | ✅ 中间件 | 只拦你输入里的命令 | `magpie plugin add` |
 
 ## 装了它，你会得到什么
 
-Claude Code 里 `claude plugin details impulse-brake` 的实际输出：
-
-```text
-Skills (1)  impulse-brake
-Hooks (2)   UserPromptSubmit, PreToolUse  (harness-only — no model context cost)
-Always-on:  ~146 tok  added to every session
-```
+三个层各管一件事：hook 脚本在本地运行，不另发模型请求；注入的提醒和加载的 skill 仍占上下文 token，不能把本机某次显示的 token 数当成固定成本。
 
 | 层 | 干什么 | 触发方式 |
 |---|---|---|
 | 🧠 **skill** | 定义刹车协议：遇到冲动该给什么方案 | AI 自己判断 + 关键词 |
 | ⚡ **UserPromptSubmit hook** | 命中关键词就往本轮上下文追加提醒 | 确定性，不依赖模型自觉 |
-| 🚧 **PreToolUse hook** | 拦下不可逆命令，deny + 退出码 2 | 确定性 |
+| 🚧 **PreToolUse hook** | 按规则拦下高危命令，使用客户端对应的 deny / 退出码约定 | 确定性匹配，覆盖有限 |
 
-skill 单独用也行。加上 hook 后不再依赖模型「想起来用」——你那句冲动的话可能只是「干吧」，没有「重写」两个字。
+skill 单独用也行。关键词 hook 能保证命中时注入提醒，不能保证模型遵循；只说「干吧」仍可能漏掉。
 
 ## 刹车协议
 
@@ -166,15 +166,15 @@ impulse-brake/
 
 ## 配置
 
-触发词、危险命令清单、注入的提醒正文都在 `hooks/lib.mjs` 顶部，改完保存即生效（插件装的是缓存副本，改仓库后需要 `claude plugin update` 或重装）。
+hook 的触发词、危险命令清单、提醒正文在 `hooks/lib.mjs` 顶部；中间件另有 `middleware/impulse-brake.middleware.js` 中的 `DEFAULTS`，两处不会自动同步。插件使用缓存副本，修改仓库后需更新或重装才能取到已发布的改动。
 
 **刻意的取舍**：不收裸的「重写」。「帮我重写这个函数」是日常请求，不该触发——只收「全部重写」「推倒重来」「重构整个」这类改大件的说法。
 
-PreToolUse 里**没有**「说句话就放行」的后门：那是最后一道闸，要跑就由人手动跑。
+PreToolUse 里**没有**「说句话就放行」的后门：要跑就由人手动跑。网关是另一套策略：输入里附带配置的确认词（如「确认执行」或 `confirm`）可放行该请求，但不会覆盖客户端 PreToolUse 的拒绝。
 
 ## 实测
 
-都在这台 Windows 机器上真跑过，不是推演：
+以下是此前在 Windows 上对 Claude Code 2.1 / Codex 0.165 的实测记录，不代表所有后续版本都兼容：
 
 | 客户端 | 场景 | 结果 |
 |---|---|---|
@@ -197,10 +197,11 @@ npm test    # hooks 15 项 + middleware 11 项
 
 ## 已知边界
 
-- **只写了 Claude Code 和 Codex 的 hook**。Cursor、Continue、Aider 之类要自己接，欢迎 PR
-- hook 版只能看**模型要执行的命令**，看不到你的原始意图逻辑；magpie 中间件版只能看**你输入的文本**。要两层都覆盖就两个都装
-- 关键词是启发式的，两头都会漏和误：你说「干吧，别问了」会漏；你说「重构整个数据层」会误
-- 它让 AI 多问一句，不是替你做决定
+- **默认中文触发**：英文 README 只是使用说明，不代表已有英文关键词或英文 skill。
+- **不是安全沙箱**：危险命令只用少量正则匹配，换参数顺序、包装命令、非 shell 工具等可能绕过；非法 hook 输入也会放行。不可逆操作仍需人工审查。
+- **不同层看到的内容不同**：UserPromptSubmit 读用户提示词，PreToolUse 读工具命令字段，中间件读请求文本；中间件无法拦客户端实际执行的工具。
+- **关键词是启发式**：「干吧，别问了」会漏；「重构整个数据层」可能误触发。提醒已注入不等于模型一定遵循。
+- **客户端范围有限**：只有 Claude Code 和 Codex 带工具 hook；Pi 仅 skill，DSH 仅提示词层。Cursor、Continue、Aider 等尚未适配。
 
 ## 想关掉的时候
 
@@ -213,9 +214,9 @@ npm test    # hooks 15 项 + middleware 11 项
 | Codex 的 hook | 删掉 `~/.codex/hooks.json` 里指向 `hooks/` 的两条命令，重启 Codex（安装器每次改前都留备份） |
 | Pi 的 skill | `pi remove git:github.com/zxbdzh/impulse-brake` |
 | DSH 的提醒 | 删掉 `~/.dsh/prompt-inject.md` 里 `<!-- impulse-brake:begin -->` 到 `<!-- impulse-brake:end -->` 这一段 |
-| magpie 网关 | `magpie plugin off` |
+| magpie 网关 | 在 magpie 插件管理中关闭本中间件 |
 
-**单条命令要放行，由你在终端自己跑。** PreToolUse 故意不留「说一句话就放行」的口子——最后一道闸，决定权在人手上。命令你自己跑一遍确认无害，再交给模型。
+**确需执行一条被拦的命令，由你审查后在终端手动执行。** PreToolUse 没有口令放行；再让模型执行相同命令仍会被拦。
 
 ## 贡献
 
