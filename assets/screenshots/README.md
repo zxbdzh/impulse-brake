@@ -2,12 +2,12 @@
 
 ## Current example: Rust migration
 
-- `rust-switch.png`: browser capture of a reading view of real Claude Code CLI output, recorded on 2026-11-01 with the local impulse-brake plugin and model `workbuddy/hy3`. **Not native Claude Code UI.**
-- User input is exactly `我要换成rust架构`. Project facts were supplied in a system prompt. All tools were disabled; no file changes are not evidence that a hook prevented a rewrite.
-- The comparison and recommendation are reproduced without rewriting, ending before the model’s textual `<toolinvoke>` block. The complete response and system prompt are preserved in [`rust-switch-session.json`](rust-switch-session.json).
-- Formatting converts the output’s Markdown table to HTML for readability. The title, input label, and footer are presentation additions. This is not an image-generated or simulated conversation.
-- Performance, ecosystem, and schedule statements are unverified model judgments. No performance benchmark or causal A/B test was run. Another isolated fixture run recommended proceeding with a rewrite; reminders are not guaranteed enforcement.
-- Both READMEs share the Chinese image; the English page provides a translated summary.
+- `rust-switch-native.png`: native Windows Terminal / Claude Code v2.1.314 capture taken on 2026-11-01. The client shows `Hy3 · WorkBuddy` (`workbuddy/hy3`), not an Anthropic Claude model. No HTML reading view, generated artwork, text replacement, or compositing is used.
+- The real client resumed session `4c675bcb-cd80-42d7-9035-2371c450aa4d`, displaying the exact user input `我要换成rust架构`, the `UserPromptSubmit` impulse-brake notice, and the recorded response. The screenshot does not represent a new model request.
+- Captured with Windows `PrintWindow` from the actual terminal window. Original: 2100 × 1453 pixels; crop: `(228, 96, 1740, 486)`; output: 1512 × 390 pixels, RGB PNG. Only the surrounding terminal chrome, Herdr sidebar, blank space, and the unexecuted `<toolinvoke>` text after the recommendation are removed. Retained pixels are not redrawn or rearranged.
+- Full response and original generation settings remain in [`rust-switch-session.json`](rust-switch-session.json). Project facts were supplied in a system prompt and tools were disabled during generation. Resuming in the native UI does not turn this into a repository audit or prove a rewrite was blocked.
+- The table contains unverified model judgments, not performance measurements or schedule promises. Reminders are not guaranteed enforcement. Both READMEs share the Chinese image; the English page supplies a translated summary.
+- `rust-switch.png` is the earlier HTML reading-view rendering, retained only as historical material and no longer embedded in either README.
 
 ## Earlier example (retained, no longer featured)
 

@@ -36,9 +36,9 @@
 
 ## 30 秒看懂
 
-<img src="assets/screenshots/rust-switch.png" width="1000" alt="Rust 换栈实例：用户说我要换成rust架构，AI 先比较现有 Node.js 实现与 Rust 提案的迁移成本和风险">
+<img src="assets/screenshots/rust-switch-native.png" width="1000" alt="Rust 换栈实例：用户说我要换成rust架构，AI 先比较现有 Node.js 实现与 Rust 提案的迁移成本和风险">
 
-*实例：在 impulse-brake 项目背景下，说「我要换成rust架构」。下图是实际 CLI 输出的阅读版截图，**不是客户端原生界面**；文字未改写，仅截取对比与建议部分。*
+*Claude Code 原生界面实拍：输入「我要换成rust架构」，客户端显示 impulse-brake 触发提醒，再给出换栈成本与风险对比。仅裁切窗口边缘，未重绘或拼接对话。*
 
 <details>
 <summary>展开场景与文字摘要</summary>
@@ -55,7 +55,7 @@
 - **会动到哪里**：hooks、客户端接入、安装分发、网关宿主与测试，都需要逐项评估。
 - **替代动作**：留到下次会话再决定；若要验证，先保留现状、做最小 Rust 原型，用同一用例比较。
 
-**演示边界**：Claude Code 客户端调用 `workbuddy/hy3`，加载 impulse-brake 插件；项目背景由系统提示提供，所有工具关闭，仅讨论决策。因此没有文件改动不代表 hook 成功阻止了重写。表格是模型判断，不是代码审计、性能实测或工期承诺；magpie 的 JavaScript 宿主接口也不能简单全量换成 Rust。提醒可能被模型忽略，不保证每次一致。
+**演示边界**：截图来自 Claude Code v2.1.314 的真实终端界面，显示模型为 `Hy3 · WorkBuddy`，不是 Anthropic Claude 模型。它恢复了此前 `workbuddy/hy3` 的实跑会话，项目背景由系统提示提供、生成回答时所有工具关闭；本图并非重新发起请求，也不是代码审计或命令拦截实测。保留了客户端标识、用户输入、hook 提醒、表格和建议，只裁去窗口外围与建议后的未执行 `<toolinvoke>` 文本。完整原文及设置见下方记录。模型判断不等于性能实测，提醒不保证每次被遵循。
 
 [完整输出与演示设置](assets/screenshots/rust-switch-session.json) · [截图来源](assets/screenshots/README.md)
 

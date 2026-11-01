@@ -36,9 +36,9 @@ Covers Claude Code, Codex, Pi, and DSH. If the current client cannot be identifi
 
 ## A 30-second example
 
-<img src="assets/screenshots/rust-switch.png" width="1000" alt="Rust migration example: a request to switch an existing Node.js project to Rust leads to a comparison of migration costs and risks">
+<img src="assets/screenshots/rust-switch-native.png" width="1000" alt="Rust migration example: a request to switch an existing Node.js project to Rust leads to a comparison of migration costs and risks">
 
-*Concrete scenario: “I want to switch this project to Rust.” This is a reading-view screenshot of actual CLI output, **not the client’s native UI**. The Chinese wording is unchanged; only the comparison and recommendation are shown.*
+*Actual Claude Code UI: “I want to switch to a Rust architecture” triggers the impulse-brake reminder, followed by a cost/risk comparison. Only window edges are cropped; no conversation text is redrawn or composited.*
 
 <details>
 <summary>Read the English summary and demonstration limits</summary>
@@ -55,7 +55,7 @@ Meaning: “I want to switch to a Rust architecture.” This recorded response f
 - **Migration surface**: assess hooks, client integration, installation/distribution, gateway host constraints, and tests.
 - **Alternative**: defer the decision to the next session; if exploring Rust, keep the current version and compare a minimal prototype using the same cases.
 
-**Limits**: Claude Code called `workbuddy/hy3` with the impulse-brake plugin loaded. Project facts were supplied through the system prompt, and all tools were disabled: this was a decision discussion, not an autonomous repository audit. No file edits therefore do not prove that the hook prevented a rewrite. The table contains model judgments, not benchmark results or schedule promises; magpie’s JavaScript host interface cannot simply be replaced wholesale with Rust. A reminder can be ignored, and responses vary.
+**Limits**: This is a native terminal capture of Claude Code v2.1.314; its model label is `Hy3 · WorkBuddy`, not an Anthropic Claude model. The client resumed the recorded `workbuddy/hy3` run: project facts had been supplied in a system prompt and all tools were disabled during generation. This capture does not issue a fresh request or demonstrate a repository audit or blocked command. Client identity, input, hook notice, table, and recommendation are retained; only surrounding UI and the unexecuted `<toolinvoke>` text after the recommendation are cropped out. Full output and settings are linked below. Model judgments are not benchmarks; reminders are not guaranteed enforcement.
 
 [Full output and demonstration settings](assets/screenshots/rust-switch-session.json) · [Screenshot provenance](assets/screenshots/README.md)
 
