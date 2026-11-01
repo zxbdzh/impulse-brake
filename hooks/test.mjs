@@ -28,6 +28,15 @@ function run(script, input) {
   ok(/impulse-brake/.test(r.json?.hookSpecificOutput?.additionalContext || ""), "ups injects reminder");
   ok(typeof r.json?.systemMessage === "string", "ups sets systemMessage");
 }
+// 换技术的具体说法也要触发；仅提到 Rust 或修改外观不能误报。
+for (const prompt of ["我要换成rust架构", "我要换成 Rust 架构"]) {
+  const r = run("user-prompt-submit.mjs", { prompt });
+  ok(/impulse-brake/.test(r.json?.hookSpecificOutput?.additionalContext || ""), `ups injects on ${prompt}`);
+}
+for (const prompt of ["Rust架构有哪些优点", "把图标换成rust颜色"]) {
+  const r = run("user-prompt-submit.mjs", { prompt });
+  ok(r.code === 0 && r.stdout.trim() === "{}", `ups silent on ${prompt}`);
+}
 {
   const r = run("user-prompt-submit.mjs", { prompt: "帮我重写这个函数" });
   ok(r.code === 0 && r.stdout.trim() === "{}", "ups silent on 重写函数");

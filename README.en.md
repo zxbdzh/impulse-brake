@@ -36,32 +36,28 @@ Covers Claude Code, Codex, Pi, and DSH. If the current client cannot be identifi
 
 ## A 30-second example
 
-<img src="assets/screenshots/decision-pause.png" width="1000" alt="Real session: a rewrite request leads to four decisions about scope, compatibility, stack, and uncommitted changes">
+<img src="assets/screenshots/rust-switch.png" width="1000" alt="Rust migration example: a request to switch an existing Node.js project to Rust leads to a comparison of migration costs and risks">
 
-*An actual session, cropped to remove margins and lower project context; the conversation is unaltered. The response is in Chinese and is not a fixed template. An English text summary is available below.*
+*Concrete scenario: “I want to switch this project to Rust.” This is a reading-view screenshot of actual CLI output, **not the client’s native UI**. The Chinese wording is unchanged; only the comparison and recommendation are shown.*
 
 <details>
-<summary>Read the English text summary</summary>
+<summary>Read the English summary and demonstration limits</summary>
 
-You type:
-
-```text
-这个项目全部重写吧
-```
-
-That means “Let's rewrite the entire project.” Instead of immediately replacing the code, the agent offers a structured decision. This is an English translation of a recorded response, not a fixed output template:
+You are working in an existing project with Node.js hooks, client plugins, installers, and tests. You say:
 
 ```text
-1. Scope          Recommended: redesign first, migrate incrementally
-                  Alternatives: rebuild everything / rewrite only the agent CLI
-2. Existing users Recommended: preserve the released version and existing data
-3. Stack          Recommended: keep FastAPI + React
-4. Uncommitted    Recommended: commit to a WIP branch before changing direction
-
-Context from that project:
-· It was already in use by colleagues.
-· ~17,000 backend lines + ~58,000 frontend lines made a full rewrite a multi-week task.
+我要换成rust架构
 ```
+
+Meaning: “I want to switch to a Rust architecture.” This recorded response first covers:
+
+- **Reason to switch**: no benchmark or language-blocking requirement has been established; identify the problem first.
+- **Migration surface**: assess hooks, client integration, installation/distribution, gateway host constraints, and tests.
+- **Alternative**: defer the decision to the next session; if exploring Rust, keep the current version and compare a minimal prototype using the same cases.
+
+**Limits**: Claude Code called `workbuddy/hy3` with the impulse-brake plugin loaded. Project facts were supplied through the system prompt, and all tools were disabled: this was a decision discussion, not an autonomous repository audit. No file edits therefore do not prove that the hook prevented a rewrite. The table contains model judgments, not benchmark results or schedule promises; magpie’s JavaScript host interface cannot simply be replaced wholesale with Rust. A reminder can be ignored, and responses vary.
+
+[Full output and demonstration settings](assets/screenshots/rust-switch-session.json) · [Screenshot provenance](assets/screenshots/README.md)
 
 </details>
 

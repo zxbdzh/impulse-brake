@@ -36,31 +36,28 @@
 
 ## 30 秒看懂
 
-<img src="assets/screenshots/decision-pause.png" width="1000" alt="真实会话：用户提出全部重写，AI 先列出重写范围、保留资产、技术栈与未提交改动四项决策">
+<img src="assets/screenshots/rust-switch.png" width="1000" alt="Rust 换栈实例：用户说我要换成rust架构，AI 先比较现有 Node.js 实现与 Rust 提案的迁移成本和风险">
 
-*真实会话截图，仅裁切空白与底部项目背景，未改写对话。先讨论方案，再决定是否动手；这不是固定输出模板。*
+*实例：在 impulse-brake 项目背景下，说「我要换成rust架构」。下图是实际 CLI 输出的阅读版截图，**不是客户端原生界面**；文字未改写，仅截取对比与建议部分。*
 
 <details>
-<summary>展开对话摘要（纯文字）</summary>
+<summary>展开场景与文字摘要</summary>
 
-你说：
-
-```text
-这个项目全部重写吧
-```
-
-它回的不是 `git rm -rf .`，而是：
+你正在一个已有 Node.js hooks、客户端插件、安装器和测试的项目里，突然说：
 
 ```text
-1. 重写范围        ▸ ✅ 先做重设计再分步迁移   ② 整个仓库推倒重来   ③ 只重写 agent CLI
-2. 保留兼容的资产  ▸ ✅ 兼容已发布的 0.2.0 + 现有数据   ② 什么都不保留
-3. 技术栈          ▸ ✅ 保持 FastAPI + React   ② 换栈   ③ 另给两个候选
-4. 未提交的改动    ▸ ✅ 先提交到 wip/ 分支     ② stash / 直接丢弃
-
-另外提醒两点事实：
-· 这个项目是在役产品，同事在用 —— 建议走「先设计后迁移」
-· backend 1.7 万行 + frontend 5.8 万行，全量重写是多周级别的工程
+我要换成rust架构
 ```
+
+本次实跑先给出：
+
+- **为什么换**：目前没有性能压测或必须换语言的证据，先明确要解决的问题。
+- **会动到哪里**：hooks、客户端接入、安装分发、网关宿主与测试，都需要逐项评估。
+- **替代动作**：留到下次会话再决定；若要验证，先保留现状、做最小 Rust 原型，用同一用例比较。
+
+**演示边界**：Claude Code 客户端调用 `workbuddy/hy3`，加载 impulse-brake 插件；项目背景由系统提示提供，所有工具关闭，仅讨论决策。因此没有文件改动不代表 hook 成功阻止了重写。表格是模型判断，不是代码审计、性能实测或工期承诺；magpie 的 JavaScript 宿主接口也不能简单全量换成 Rust。提醒可能被模型忽略，不保证每次一致。
+
+[完整输出与演示设置](assets/screenshots/rust-switch-session.json) · [截图来源](assets/screenshots/README.md)
 
 </details>
 

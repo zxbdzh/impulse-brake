@@ -30,6 +30,15 @@ const ok = (c, m) => (c ? pass++ : fail.push(m));
   const body = { contents: [{ role: "user", parts: [{ text: "不想做了" }] }] };
   ok(onRequest(body, { protocol: "gemini" }) === body && body.contents[0].parts.length === 2, "gemini inject");
 }
+// 具体换栈请求：跨协议都用同一套词表，避免演示句漏触发。
+for (const prompt of ["我要换成rust架构", "我要换成 Rust 架构"]) {
+  const body = { model: "x", messages: [{ role: "user", content: prompt }] };
+  ok(onRequest(body, { protocol: "chat" }) === body && body.messages[0].content.includes("impulse-brake"), `stack switch injects: ${prompt}`);
+}
+for (const prompt of ["Rust架构有哪些优点", "把图标换成rust颜色"]) {
+  const body = { model: "x", messages: [{ role: "user", content: prompt }] };
+  ok(onRequest(body, { protocol: "chat" }) === undefined, `no stack-switch false positive: ${prompt}`);
+}
 // 6 普通请求不注入（裸"重写"不收）
 {
   const body = { model: "x", messages: [{ role: "user", content: "帮我重写这个函数" }] };
