@@ -36,6 +36,13 @@ Covers Claude Code, Codex, Pi, and DSH. If the current client cannot be identifi
 
 ## A 30-second example
 
+<img src="assets/screenshots/decision-pause.png" width="1000" alt="Real session: a rewrite request leads to four decisions about scope, compatibility, stack, and uncommitted changes">
+
+*An actual session, cropped to remove margins and lower project context; the conversation is unaltered. The response is in Chinese and is not a fixed template. An English text summary is available below.*
+
+<details>
+<summary>Read the English text summary</summary>
+
 You type:
 
 ```text
@@ -55,6 +62,8 @@ Context from that project:
 · It was already in use by colleagues.
 · ~17,000 backend lines + ~58,000 frontend lines made a full rewrite a multi-week task.
 ```
+
+</details>
 
 **One pause per impulse.** After you have heard the trade-offs and still want to proceed, the skill tells the agent to comply without repeated persuasion. The command-blocking hook is a separate layer and does not accept a conversational override.
 
